@@ -16,6 +16,9 @@ RUN microdnf install -y --nodocs shadow-utils && \
 ENV NPM_CONFIG_PREFIX=/app/.npm-global
 ENV PATH=$PATH:$NPM_CONFIG_PREFIX/bin
 
+# Fix npm cache directory permissions
+RUN mkdir -p /opt/app-root/src/.npm && chown -R appuser:appuser /opt/app-root/src/.npm
+
 # Copy package.json and package-lock.json
 COPY package.json .
 
