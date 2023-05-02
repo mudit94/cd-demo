@@ -1,5 +1,5 @@
 # Use the official Node.js image as the base
-FROM node:14
+FROM rhel8/nodejs-14-minimal
 
 # Set the working directory
 WORKDIR /app
