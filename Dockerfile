@@ -5,7 +5,7 @@ FROM rhel8/nodejs-14-minimal
 WORKDIR /app
 
 # Create a new user and group and assign it to /app
-RUN groupadd -r appuser && useradd -r -g appuser appuser && chown -R appuser:appuser /app
+RUN addgroup -g 1001 appuser && adduser -u 1001 -G appuser -s /bin/sh -D appuser && chown -R appuser:appuser /app
 
 # Copy package.json and package-lock.json
 COPY package.json .
@@ -25,3 +25,4 @@ EXPOSE 4000
 
 # Start the application
 CMD ["npm", "start"]
+
