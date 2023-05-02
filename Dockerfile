@@ -12,6 +12,10 @@ RUN microdnf install -y --nodocs shadow-utils && \
     chown -R appuser:appuser /app && \
     microdnf clean all
 
+# Set the NPM_CONFIG_PREFIX environment variable
+ENV NPM_CONFIG_PREFIX=/app/.npm-global
+ENV PATH=$PATH:$NPM_CONFIG_PREFIX/bin
+
 # Copy package.json and package-lock.json
 COPY package.json .
 
