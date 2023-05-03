@@ -1,36 +1,28 @@
 # Use the official Node.js image as the base
-FROM registry.access.redhat.com/ubi8/nodejs-14-minimal:1-90.1681311950
+FROM docker.io/library/node:16.10-alpine
+
 
 # Set the working directory
 WORKDIR /app
 
-# Install shadow-utils and create a new user and group, then assign it to /app
-USER root
-RUN microdnf install -y --nodocs shadow-utils && \
-    groupadd -r appuser && \
-    useradd -r -g appuser appuser && \
-    chown -R appuser:appuser /app && \
-    microdnf clean all
-
-# Set the NPM_CONFIG_PREFIX environment variable
-ENV NPM_CONFIG_PREFIX=/app/.npm-global
-ENV PATH=$PATH:$NPM_CONFIG_PREFIX/bin
-
-# Fix npm cache directory permissions
-RUN mkdir -p /opt/app-root/src/.npm && chown -R appuser:appuser /opt/app-root/src/.npm
-
 # Copy package.json and package-lock.json
-COPY package.json .
+COPY package.json ./
+COPY package-lock.json ./
 
 # Install dependencies
-USER appuser
-RUN npm install
+RUN npm install --production
 
 # Copy the rest of the application
 COPY . .
 
+# Set environment variables
+ENV NODE_ENV=production
+
 # Build the application
 RUN npm run build
+
+# Remove development dependencies
+RUN npm prune --production
 
 # Expose the port the app will run on
 EXPOSE 4000
